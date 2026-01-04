@@ -191,6 +191,10 @@ if st.session_state.file_processed:
         st.markdown('<div class="stage-box">', unsafe_allow_html=True)
         c1, c2 = st.columns([1, 2])
         with c1:
+            # --- FIX: DEFINE w AND b RIGHT HERE ---
+            w = st.session_state.svm_model.coef_[0]
+            b = st.session_state.svm_model.intercept_[0]
+            # --------------------------------------
 
             fig, ax = plt.subplots(figsize=(8, 3.5))
             
@@ -214,14 +218,13 @@ if st.session_state.file_processed:
             # Plot the Current File (The Green Star)
             ax.scatter([feature_x], [feature_y], c='#00FF00', s=250, marker='*', zorder=10, label="Current File")
             
-            # --- NEW LABELS ADDED HERE ---
+            # Labels
             ax.set_xlabel("Feature 1: Shannon Entropy (Randomness)", color='white', fontsize=9)
             ax.set_ylabel("Feature 2: Visual Pattern Score", color='white', fontsize=9)
             ax.set_title("SVM Knowledge Base & Decision Boundary", color='white', fontsize=10)
             ax.legend(loc="upper right", fontsize=8)
-            # -----------------------------
 
-            # Styling the graph to match the dark theme
+            # Styling
             ax.set_xlim(0, 10); ax.set_ylim(0, 10)
             ax.set_facecolor('#0A1E3F'); fig.patch.set_facecolor('#0A1E3F')
             ax.tick_params(colors='white', which='both')
@@ -372,4 +375,5 @@ if st.session_state.file_processed:
 else:
 
     st.info("Please Select an Option from the Sidebar and Click 'Execute Pipeline'")
+
 
