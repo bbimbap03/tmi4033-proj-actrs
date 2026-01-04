@@ -182,6 +182,7 @@ if start_process:
 # 5. PIPELINE EXECUTION
 # ==========================================
 st.title("🛡️ ACTRS: Adaptive Cyber Threat Response System")
+st.caption("Architecture: CNN Perception → MARL Coordination → SVM Knowledge Base")
 
 if st.session_state.file_processed:
     
@@ -191,46 +192,12 @@ if st.session_state.file_processed:
         st.markdown('<div class="stage-box">', unsafe_allow_html=True)
         c1, c2 = st.columns([1, 2])
         with c1:
-            # --- FIX: DEFINE w AND b RIGHT HERE ---
-            w = st.session_state.svm_model.coef_[0]
-            b = st.session_state.svm_model.intercept_[0]
-            # --------------------------------------
-
-            fig, ax = plt.subplots(figsize=(8, 3.5))
-            
-            # Plot the data points (Blue = Safe, Red = Malware)
-            ax.scatter(st.session_state.X[:, 0], st.session_state.X[:, 1], c=st.session_state.y, cmap='coolwarm', alpha=0.5)
-            
-            # Calculate the hyperplane (The white line)
-            xx = np.linspace(0, 10, 100)
-            yy = - (w[0] * xx + b) / w[1]
-            
-            # Calculate the margins (The dotted lines)
-            margin = 1 / np.sqrt(np.sum(st.session_state.svm_model.coef_ ** 2))
-            yy_down = yy - np.sqrt(1 + (-w[0]/w[1]) ** 2) * margin
-            yy_up = yy + np.sqrt(1 + (-w[0]/w[1]) ** 2) * margin
-            
-            # Plot the lines
-            ax.plot(xx, yy, 'w-', label="Decision Boundary")
-            ax.plot(xx, yy_down, 'w--', alpha=0.5, label="Margin (Uncertainty)")
-            ax.plot(xx, yy_up, 'w--', alpha=0.5)
-            
-            # Plot the Current File (The Green Star)
-            ax.scatter([feature_x], [feature_y], c='#00FF00', s=250, marker='*', zorder=10, label="Current File")
-            
-            # Labels
-            ax.set_xlabel("Feature 1: Shannon Entropy (Randomness)", color='white', fontsize=9)
-            ax.set_ylabel("Feature 2: Visual Pattern Score", color='white', fontsize=9)
-            ax.set_title("SVM Knowledge Base & Decision Boundary", color='white', fontsize=10)
-            ax.legend(loc="upper right", fontsize=8)
-
-            # Styling
-            ax.set_xlim(0, 10); ax.set_ylim(0, 10)
-            ax.set_facecolor('#0A1E3F'); fig.patch.set_facecolor('#0A1E3F')
-            ax.tick_params(colors='white', which='both')
-            for spine in ax.spines.values(): spine.set_color('white')
-            
-            st.pyplot(fig)
+            if uploaded_file and bytes_data:
+                img = get_image_from_bytes(bytes_data)
+                st.image(img, caption=f"Visual Byte Map (CNN Input)", use_container_width=True)
+            else:
+                noise = np.random.randint(0, 255, (100, 300), dtype=np.uint8)
+                st.image(Image.fromarray(noise), caption="Simulated Byte Map (CNN Input)", use_container_width=True)
         with c2:
             st.write(f"**Deep Learning Processing:**")
             st.write("1. Converting binary to grayscale tensors...")
@@ -373,7 +340,4 @@ if st.session_state.file_processed:
         st.markdown('<div class="stage-box">⏳ **Pending:** Waiting for Stage 3 Resolution...</div>', unsafe_allow_html=True)
 
 else:
-
     st.info("Please Select an Option from the Sidebar and Click 'Execute Pipeline'")
-
-
