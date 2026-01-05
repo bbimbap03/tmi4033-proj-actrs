@@ -182,7 +182,6 @@ if start_process:
 # 5. PIPELINE EXECUTION
 # ==========================================
 st.title("🛡️ ACTRS: Adaptive Cyber Threat Response System")
-st.caption("Architecture: CNN Perception → MARL Coordination → SVM Knowledge Base")
 
 if st.session_state.file_processed:
     
@@ -367,4 +366,5 @@ if st.session_state.file_processed:
 
 else:
     st.info("Please Select an Option from the Sidebar and Click 'Execute Pipeline'")
+
 
